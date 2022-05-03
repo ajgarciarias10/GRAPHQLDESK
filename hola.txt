@@ -1,0 +1,6 @@
+mutation{
+  cr_ps(fecha_de_inicio:"12", fecha_de_fin:"12"
+,ocupado:false,disponibleParcialmente:false,bloqueado:true,ciudad:"GRANADA",n_planta:2,observaciones:"SOY BOBIN"){
+    fecha_de_inicio
+  }
+}
