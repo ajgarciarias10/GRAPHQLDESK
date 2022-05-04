@@ -9,14 +9,17 @@ export const GET_ALL_puestos ={
     },
 
 }
-export const GET_NUMERO_puestos ={
-   
+//No funciona
+export const Contar_puestos ={
     type: puestoType,
-    args:{
-        ciudad: {type:GraphQLString}
-    },
-     resolve(parent: any, args:any){
-        const ciudad = args.ciudad; 
-        return  puesto.query("SELECT COUNT(ciudad) FROM puesto WHERE ciudad ='"+ ciudad+"'");
-    },
+        args:{
+            ciudad:{type:GraphQLString},
+
+        },
+        async resolve(parent: any, args:any){
+            const ciudad = args.ciudad ;
+           return puesto.findAndCountBy({ciudad: ciudad });
+            
+        }
+
 }

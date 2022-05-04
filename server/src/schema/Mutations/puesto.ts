@@ -34,3 +34,33 @@ export const DELETE_PUESTO = {
         return  {succesful : true, message: "Delete Done"};
     },
 };
+export const UPDATE_PUESTO = {
+    type: puestoType,
+    args:{
+        id_puesto: {type:GraphQLID},
+        ocupado: {type:GraphQLBoolean},
+        disponibleParcialmente: {type:GraphQLBoolean},
+        bloqueado:{type:GraphQLBoolean},
+        fecha_de_inicio:{type:GraphQLString},
+        fecha_de_fin:{type:GraphQLString},
+        observaciones:{type:GraphQLString}
+
+    },
+    async resolve(parent: any, args:any){
+        const {id_puesto,ocupado,disponibleParcialmente,bloqueado,fecha_de_inicio,fecha_de_fin,observaciones} = args ;
+        const puestos = await puesto.findOne({ where: {id_puesto: id_puesto }});
+        if(!puestos){
+            throw new Error ("id_puesto: DOESNT EXIST")
+        }
+        //Actualizo de esta forma ya que solo se puede pasar dos argumentos por actualizacion
+        puesto.update({id_puesto : id_puesto},{ocupado : ocupado});
+        puesto.update({id_puesto : id_puesto},{disponibleParcialmente : disponibleParcialmente})
+        puesto.update({id_puesto : id_puesto},{bloqueado : bloqueado})
+        puesto.update({id_puesto : id_puesto}, {fecha_de_inicio : fecha_de_inicio})
+        puesto.update({id_puesto : id_puesto}, {fecha_de_fin : fecha_de_fin})
+        puesto.update({id_puesto : id_puesto}, {observaciones : observaciones})
+        return {succesful: true,message:"Contraseña Actualizada"};
+
+     
+    },
+}
