@@ -1,9 +1,9 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn} from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, PrimaryColumn} from "typeorm";
 import{puesto} from "./puesto"
 
 @Entity()
 export class User extends BaseEntity{
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
     dni!:String;
     @Column()
     nombre!:String;

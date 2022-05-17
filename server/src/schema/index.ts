@@ -8,6 +8,7 @@ import { DELETE_PUESTO } from "./Mutations/puesto";
 import { DELETE_USER } from "./Mutations/User";
 import{UPDATE_PUESTO} from "./Mutations/puesto";
 import { Contar_puestos } from "./Queries/puesto";
+import { UPDATE_USER } from "./Mutations/User";
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
@@ -24,7 +25,8 @@ const Mutation = new GraphQLObjectType({
         cr_ps: CREATE_Puesto,
         borraPuestoPorId: DELETE_PUESTO,
         borrarusuario: DELETE_USER,
-        actualizapuesto:UPDATE_PUESTO
+        actualizapuesto:UPDATE_PUESTO,
+        actualizaEmpleado: UPDATE_USER
     }   
     
 })

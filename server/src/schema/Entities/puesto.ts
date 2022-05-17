@@ -1,9 +1,9 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, PrimaryColumn } from "typeorm";
 import { User } from "./User";
 
 @Entity()
 export class puesto extends BaseEntity{
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
     id_puesto!:number;
     @Column({type: 'datetime'})
     fecha_de_inicio!:Date;
@@ -18,7 +18,7 @@ export class puesto extends BaseEntity{
     @Column()
     ciudad!:String;
     @Column()
-    n_planta!:number;
+    n_planta!:String;
     @Column()
     observaciones!:String;
 

@@ -8,12 +8,11 @@ export const CREATE_Puesto = {
         id_puesto: {type : GraphQLID},
         fecha_de_inicio :  {type:GraphQLString},
         fecha_de_fin :  {type: GraphQLString},
-        puestoempresa :  {type: GraphQLString},
         ocupado : {type:GraphQLBoolean},
         disponibleParcialmente: {type:GraphQLBoolean},
         bloqueado: {type:GraphQLBoolean},
         ciudad: {type:GraphQLString},
-        n_planta: {type:GraphQLInt},
+        n_planta: {type:GraphQLString},
         observaciones: {type:GraphQLString},
     },
     async resolve(parent: any, args:any){

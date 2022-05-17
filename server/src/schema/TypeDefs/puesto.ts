@@ -10,7 +10,7 @@ export const puestoType = new GraphQLObjectType({
         disponibleParcialmente: {type:GraphQLBoolean},
         bloqueado: {type:GraphQLBoolean},
         ciudad: {type:GraphQLString},
-        n_planta: {type:GraphQLInt},
+        n_planta: {type:GraphQLString},
         observaciones: {type:GraphQLString},
 
     })
