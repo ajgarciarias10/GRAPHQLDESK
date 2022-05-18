@@ -4,7 +4,7 @@ import { User } from "./User";
 @Entity()
 export class puesto extends BaseEntity{
     @PrimaryColumn()
-    id_puesto!:number;
+    id_puesto!:String;
     @Column({type: 'datetime'})
     fecha_de_inicio!:Date;
     @Column({type: 'datetime'})

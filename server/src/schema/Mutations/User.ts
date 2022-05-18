@@ -10,7 +10,7 @@ export const CREATE_USER = {
         nombre: {type:GraphQLString},
         apellidos : {type:GraphQLString},
         puestoempresa : {type:GraphQLString},
-        id_puesto_fk : {type:GraphQLInt},
+        id_puesto_fk : {type:GraphQLString},
     },
     async resolve(parent: any, args:any){
         const{dni,nombre,apellidos,puestoempresa,id_puesto_fk} = args;
@@ -38,7 +38,7 @@ export const UPDATE_USER = {
         nombre: {type:GraphQLString},
         apellidos : {type:GraphQLString},
         puestoempresa : {type:GraphQLString},
-        id_puesto_fk : {type:GraphQLInt},
+        id_puesto_fk : {type:GraphQLString},
 
     },
     async resolve(parent: any, args:any){

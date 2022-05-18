@@ -5,7 +5,7 @@ import{messageType} from "../TypeDefs/Message"
 export const CREATE_Puesto = {
     type: puestoType,
     args:{
-        id_puesto: {type : GraphQLID},
+        id_puesto: {type : GraphQLString},
         fecha_de_inicio :  {type:GraphQLString},
         fecha_de_fin :  {type: GraphQLString},
         ocupado : {type:GraphQLBoolean},
@@ -25,7 +25,7 @@ export const CREATE_Puesto = {
 export const DELETE_PUESTO = {
     type: puestoType,
     args:{
-        id_puesto: {type:GraphQLID}
+        id_puesto: {type:GraphQLString}
     },
     async resolve(parent: any, args:any){
         const id_puesto = args.id_puesto;
@@ -36,7 +36,7 @@ export const DELETE_PUESTO = {
 export const UPDATE_PUESTO = {
     type: puestoType,
     args:{
-        id_puesto: {type:GraphQLID},
+        id_puesto: {type:GraphQLString},
         ocupado: {type:GraphQLBoolean},
         disponibleParcialmente: {type:GraphQLBoolean},
         bloqueado:{type:GraphQLBoolean},

@@ -7,7 +7,7 @@ export const UserType = new GraphQLObjectType({
         nombre :  {type: GraphQLString},
         apellidos :  {type: GraphQLString},
         puestoempresa :  {type: GraphQLString},
-        id_puesto_fk : {type:GraphQLInt}
+        id_puesto_fk : {type:GraphQLString}
       
     })
 })

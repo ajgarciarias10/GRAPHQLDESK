@@ -1,4 +1,4 @@
-import { GraphQLList, GraphQLString } from 'graphql'
+import { GraphQLInt, GraphQLList, GraphQLString } from 'graphql'
 import { resolve } from 'path'
 import { puesto } from '../Entities/puesto';
 import { puestoType } from '../TypeDefs/puesto'
@@ -9,17 +9,23 @@ export const GET_ALL_puestos ={
     },
 
 }
-//No funciona
-export const Contar_puestos ={
+export const GET_PuestosState ={
     type: puestoType,
-        args:{
-            ciudad:{type:GraphQLString},
-
-        },
-        async resolve(parent: any, args:any){
-            const ciudad = args.ciudad ;
-           return puesto.findAndCountBy({ciudad: ciudad });
-            
-        }
+    args:{
+        id_puesto: {type:GraphQLString}
+    },
+    async resolve(_: any, args:any){
+       var  result = await puesto.findOneBy({id_puesto: args.id_puesto});
+       if (!result){
+           console.log("No existe")
+           return !result
+       }else{
+            return result
+       }
+        
+    }
 
 }
+
+
+
