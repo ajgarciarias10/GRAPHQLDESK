@@ -8,12 +8,14 @@ import { DELETE_PUESTO } from "./Mutations/puesto";
 import { DELETE_USER } from "./Mutations/User";
 import{UPDATE_PUESTO} from "./Mutations/puesto";
 import { UPDATE_USER } from "./Mutations/User";
+import{GET_PuestosStateByCiudadYPlanta} from  "./Queries/puesto";
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
         getallusers : GET_ALL_USERS,
         cogerpuestos : GET_ALL_puestos,
-        cogerPuestosPasandoId: GET_PuestosState
+        cogerPuestosPasandoId: GET_PuestosState,
+        cogelPuestosPasandoCiudadYPlanta : GET_PuestosStateByCiudadYPlanta
     }
     
 })

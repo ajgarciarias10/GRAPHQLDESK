@@ -1,13 +1,16 @@
 import { useState,useEffect } from "react";
- import {ApolloClient,InMemoryCache,ApolloProvider,useQuery,useMutation} from '@apollo/client'
-import {cogerPuestosPasandoId}  from "./Graphql/Queries" 
+ import {ApolloClient,InMemoryCache,ApolloProvider,useQuery,useMutation, useLazyQuery} from '@apollo/client'
 import Desk from "../components/desk/desk";
 import Header_Nav from "../components/header_nav/header_nav"
 import Places_Form from "../components/places_menu/places_menu"
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-// import {CREATE_PUESTO} from '../pages/Graphql/Mutations'
-
-
+import{cogerPuestosPasandoCiudadYPlanta} from "../pages/Graphql/Queries"
+//region Creacion de puesto
+  // import {CREATE_PUESTO} from '../pages/Graphql/Mutations'
+//endregion
+//region Select query *
+  import{cogerPuestos} from '../pages/Graphql/Queries'
+//endregion
 
 
 
@@ -80,43 +83,69 @@ const Home = () => {
       console.log("WebSocket Client Connected");
       client_socket.send(JSON.stringify({place:place,svg_width:svg_width,svg_height:svg_height}));
     }
-
+ 
     client_socket.onmessage = (message) => {
+      
       // console.log("[MESSAGE] " + message.data);
       loadDesks(message.data,building_city,building_floor)
+
     }
   }
 
   let th_all_desks = []
+     //region Variable para coger puestos
+    //  var{data,loading} = useQuery(cogerPuestos)
+    //  if(!loading){
+    //   console.log(data)
+    //  }
+    
+     
 
-  
-  // const[createpuesto,{error}] = useMutation(CREATE_PUESTO);
-  // function cargamelaBaseDeDatos(ID,building_city,building_floor){
-  //   let fechaDeFin ="2022-05-18 15:33:28.000000"
-  //   let fechaDeINn ="2022-05-18 08:33:28.000000"
-  //   let id_puesto = ID+"_"+building_city+"_"+building_floor
-  //   console.log(id_puesto)
-        
-  //       createpuesto({
-  //           variables: {id_puesto: id_puesto ,fecha_de_inicio : fechaDeINn,fecha_de_fin : fechaDeFin,ocupado : false,
-  //               disponibleParcialmente:false,bloqueado:false,ciudad: building_city,
-  //               n_planta: building_floor,observaciones: ""},
+  //region  Descomentar para la creacion de la tabla Puesto
+    // const[createpuesto,{error}] = useMutation(CREATE_PUESTO);
+    // function cargamelaBaseDeDatos(ID,building_city,building_floor){
+    //   let fechaDeFin ="2022-05-18 15:33:28.000000"
+    //   let fechaDeINn ="2022-05-18 08:33:28.000000"
+    //   let id_puesto = ID+"_"+building_city+"_"+building_floor
+    //   console.log(id_puesto)
+          
+    //       createpuesto({
+    //           variables: {id_puesto: id_puesto ,fecha_de_inicio : fechaDeINn,fecha_de_fin : fechaDeFin,ocupado : false,
+    //               disponibleParcialmente:false,bloqueado:false,ciudad: building_city,
+    //               n_planta: building_floor,observaciones: ""},
 
-  //       })
-  // }
+    //       })
+    // }
+  //endregion
 
+
+
+
+  const[cogerPuestos,result] = useLazyQuery(cogerPuestosPasandoCiudadYPlanta);
   function loadDesks (positions, building_city,building_floor){
     // console.log(building_city);
 
     positions = JSON.parse(positions)
     let i = 0;
     for (const position of positions) {
-
+      //region OJO!!! DESCOMENTAR ESTO SOLO UNA VEZ PARA QUE TENER CARGADA LA BASE DE DATOS TENEIS QUE CARGARLA SECCION POR SECCION
+        //NO OS PREOCUPEIS SI OS SALE EL ERROR DE DUPLICATED ENTRY ES POR QUE HABEIS DUPLICADO LA INSERCCION PERO LUEGO SE METE SOLO 1
         // cargamelaBaseDeDatos(i,building_city,building_floor)
-        th_all_desks.push(<Desk pos_x={position[0]} pos_y = {position[1]}  deskStatus={"disponible"} tableId={i} building_city={building_city} building_floor={building_floor} 
+      //endregion
+
+
+      //region CREACION ESTADO PUESTOSSSSSSSS
+      
+       const {resultado} = cogerPuestos({variables: {building_city,building_floor}})
+
+       
+     
+      console.log(JSON.stringify(resultado))
+       th_all_desks.push(<Desk pos_x={position[0]} pos_y = {position[1]}  deskStatus={"disponible"} tableId={i} building_city={building_city} building_floor={building_floor} 
         date={date} start_time={startTime} end_time={endTime} />)
        
         i++
+      //endregion
     }
 
     setAllDesks(th_all_desks);

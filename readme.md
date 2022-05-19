@@ -29,6 +29,7 @@ Videos de GraphQL
     PedroTech Part4 :https://www.youtube.com/watch?v=LAFSppcFppE
     //Consultas con argumentos y mas
     PedroTech Part4 :https://www.youtube.com/watch?v=8_DuZHJBB-k
+Doc: https://typeorm.io/
 ------------------------------------------------------------------
 Ademas de todo esto la parte del codigo la tendreis explicada
 ------------------------------------------------------------------
