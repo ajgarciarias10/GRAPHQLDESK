@@ -1,0 +1,46 @@
+.main_container{
+    width: 100vw;
+    height: 55px;
+
+    background-color: #E20074;
+
+    display: flex;
+    align-items: center;
+}
+
+.ham_menu{
+    margin-left: 10px;
+    font-size: 1.4rem;
+    color: white;
+}
+
+.header_title{
+    color: white;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 100;
+
+    font-size: 1.4rem;
+    margin-left: 20px;
+}
+
+.account{
+    color:white;
+    font-size: 1.4rem;
+    
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.misc{
+    color: white;
+    font-size: 1.4rem;
+    margin-right: 10px;
+}
+
+@media (min-width:767px) {
+    .ham_menu{
+        margin-left: 15px;
+    }
+
+}

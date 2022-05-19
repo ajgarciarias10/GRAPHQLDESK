@@ -1,0 +1,13 @@
+.custom_input{
+    background-color: transparent;
+    border: none;
+    width: 100%;
+
+    outline: none;
+
+    text-align: left;
+}
+
+.custom_input:hover{
+    cursor: pointer;
+}

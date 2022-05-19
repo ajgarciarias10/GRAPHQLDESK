@@ -1,0 +1,19 @@
+.main_container{
+    width: 45px;
+    height: 45px;
+}
+
+.floating_container{
+    position: relative;
+    z-index: 1;
+}
+
+.free_place{
+    width: 45px;
+    height: 45px;
+
+}
+
+.main_container:hover{
+    cursor: pointer;
+}

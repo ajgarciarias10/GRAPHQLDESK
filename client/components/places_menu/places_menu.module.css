@@ -1,0 +1,292 @@
+.main_container{
+    position: relative;
+    z-index:8;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    row-gap: 10px;
+    margin-top: 20px;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100vw;
+    height: 2vw;
+}
+
+.places_container{
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+
+    width: 340px;
+    height: 33px;
+    
+    margin-right: 1vw;
+
+    padding: 0 0.5vw 0.5vw 0.5vw;
+
+}
+
+.places_label{
+    position: relative;
+
+    font-size: 0.7rem;
+
+    bottom: 8px;
+    width: 110px;
+
+    background-color: white;
+    color: #808080;
+    text-align: center;
+
+    margin-left: 10px ;
+}
+
+.places_selector{
+    position: relative;
+    
+    bottom: 5px;
+
+    border: none;
+    outline: none;
+
+    padding-left: 10px;
+}
+
+.datepicker_container{
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+
+    width: 140px;
+    height: 33px;
+
+    margin-right: 1vw;
+
+    padding: 0 0.5vw 0.5vw 0.5vw;
+}
+
+.date_label{
+    position: relative;
+    font-size: 0.7rem;
+
+    bottom: 8px;
+    width: 80px;
+
+    background-color: white;
+    color: #808080;
+    text-align: center;
+
+    margin-left: 0px ;
+}
+
+.calendar_container{
+    position: relative;
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+    
+    width: 115px;
+
+    bottom: 10px;
+    margin-right: 1vw;
+}
+
+.main_hours_container{
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-around;
+    align-items: center;
+
+    width: 240px;
+    height: 33px;
+}
+
+.hour_selector_container{
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+    width: 140px;
+    height: 33px;
+    
+    padding: 0 0.5vw 0.5vw 0.5vw;
+}
+
+.info_icon{
+    font-size: 1.2rem;
+    margin-left: 1vw;
+}
+
+.switch_container{    
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+
+    display: flex;
+    align-items: center;
+
+    padding: 5px 15px 5px 15px;
+
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.switch_label{
+    font-size: 0.9rem;
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 18px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider_round {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider_round:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 15px;
+    left: 2px;
+    bottom: 1px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider_round {
+    background-color: #E20074;
+  }
+  
+  input:focus + .slider_round {
+    box-shadow: 0 0 1px #d40671;
+  }
+  
+  input:checked + .slider_round:before {
+    -webkit-transform: translateX(11px);
+    -ms-transform: translateX(11px);
+    transform: translateX(11px);
+  }
+  
+  /* Rounded sliders */
+  .slider_round {
+    border-radius: 34px;
+  }
+  
+  .slider_round:before {
+    border-radius: 50%;
+  }
+
+
+@media screen and (min-width:767px) {
+    .main_container{   
+        margin-top: 20px;
+    }
+    
+    .places_container{
+        border-radius: 10px;
+        width: 340px;
+        height: 33px;
+        
+        margin-right: 1vw;
+    
+        padding: 0 0.5vw 0.5vw 0.5vw;
+    }
+    
+    .places_label{
+        font-size: 0.7rem;
+    
+        bottom: 8px;
+        width: 110px;
+    
+        margin-left: 10px ;
+    }
+    
+    .places_selector{
+        bottom: 5px;
+        
+        padding-left: 10px;
+    }
+    
+    .places_selector:hover{
+        cursor: pointer;
+    }
+    
+    .datepicker_container{
+
+        border-radius: 10px;
+        width: 140px;
+        height: 33px;
+        
+        margin-right: 1vw;
+    
+        padding: 0 0.5vw 0.5vw 0.5vw;
+    
+    }
+    
+    .date_label{
+        font-size: 0.7rem;
+    
+        bottom: 8px;
+        width: 80px;
+    
+        margin-left: 0px ;
+    }
+    
+    .calendar_container{
+        width: 115px;
+    
+        bottom: 10px;
+        margin-right: 1vw;
+    
+    }
+    
+    .main_hours_container{
+        width: 340px;
+        height: 33px;
+    }
+    
+    .hour_selector_container{
+        border-radius: 10px;
+        width: 140px;
+        height: 33px;
+        
+        padding: 0 0.5vw 0.5vw 0.5vw;
+    }
+    
+    .info_icon{
+        font-size: 1.2rem;
+        margin-left: 1vw;
+    }
+}
