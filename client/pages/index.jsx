@@ -5,7 +5,7 @@ import Desk from "../components/desk/desk";
 import Header_Nav from "../components/header_nav/header_nav"
 import Places_Form from "../components/places_menu/places_menu"
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-import {CREATE_PUESTO} from '../pages/Graphql/Mutations'
+// import {CREATE_PUESTO} from '../pages/Graphql/Mutations'
 
 
 
@@ -90,21 +90,20 @@ const Home = () => {
   let th_all_desks = []
 
   
-  const[createpuesto,{error}] = useMutation(CREATE_PUESTO);
-  // const[getEstadoPuestos] = useQuery(cogerPuestosPasandoId);
-  function cargamelaBaseDeDatos(ID,building_city,building_floor){
-    let fechaDeFin ="2022-05-18 15:33:28.000000"
-    let fechaDeINn ="2022-05-18 08:33:28.000000"
-    let id_puesto = ID+"_"+building_city+"_"+building_floor
-    console.log(id_puesto)
+  // const[createpuesto,{error}] = useMutation(CREATE_PUESTO);
+  // function cargamelaBaseDeDatos(ID,building_city,building_floor){
+  //   let fechaDeFin ="2022-05-18 15:33:28.000000"
+  //   let fechaDeINn ="2022-05-18 08:33:28.000000"
+  //   let id_puesto = ID+"_"+building_city+"_"+building_floor
+  //   console.log(id_puesto)
         
-        createpuesto({
-            variables: {id_puesto: id_puesto ,fecha_de_inicio : fechaDeINn,fecha_de_fin : fechaDeFin,ocupado : false,
-                disponibleParcialmente:false,bloqueado:false,ciudad: building_city,
-                n_planta: building_floor,observaciones: ""},
+  //       createpuesto({
+  //           variables: {id_puesto: id_puesto ,fecha_de_inicio : fechaDeINn,fecha_de_fin : fechaDeFin,ocupado : false,
+  //               disponibleParcialmente:false,bloqueado:false,ciudad: building_city,
+  //               n_planta: building_floor,observaciones: ""},
 
-        })
-  }
+  //       })
+  // }
 
   function loadDesks (positions, building_city,building_floor){
     // console.log(building_city);
@@ -113,7 +112,7 @@ const Home = () => {
     let i = 0;
     for (const position of positions) {
 
-        cargamelaBaseDeDatos(i,building_city,building_floor)
+        // cargamelaBaseDeDatos(i,building_city,building_floor)
         th_all_desks.push(<Desk pos_x={position[0]} pos_y = {position[1]}  deskStatus={"disponible"} tableId={i} building_city={building_city} building_floor={building_floor} 
         date={date} start_time={startTime} end_time={endTime} />)
        
@@ -182,7 +181,7 @@ const Home = () => {
     }
 
   }
-
+//El componente Apollo Provider se utilza de componentes padres > hijos por lo tanto tiene que estar tanto aqui por que va de index > resvform
   return (
     <ApolloProvider client={client}>
       <div>

@@ -19,7 +19,7 @@ const main = async () => {
         username: "root",
         password : "",
         logging : true,
-        synchronize : true, //Si lo pusieramos en true automaticamente observa y crea entidades como la que hay en el array de debajop
+        synchronize : false, //Si lo pusieramos en true automaticamente observa y crea entidades como la que hay en el array de debajop
         entities: [User,puesto],
 
 
