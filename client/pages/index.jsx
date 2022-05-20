@@ -4,7 +4,7 @@ import Desk from "../components/desk/desk";
 import Header_Nav from "../components/header_nav/header_nav"
 import Places_Form from "../components/places_menu/places_menu"
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-import{cogerPuestosPasandoCiudadYPlanta} from "../pages/Graphql/Queries"
+import{cogerPuestosPasandoCiudadYPlanta, cogerPuestosPasandoId} from "../pages/Graphql/Queries"
 //region Creacion de puesto
   // import {CREATE_PUESTO} from '../pages/Graphql/Mutations'
 //endregion
@@ -24,7 +24,8 @@ const Home = () => {
   const [endTime,setEndTime] = useState();
   const [date, setDate] = useState();
   const [all_desks, setAllDesks] = useState([]);
- 
+  const [puestos,setPuestos] = useState([])
+  
   const city_acron = {
       "Barcelona22@":"BAR",
       "GranadaCEPTS": "GRX",
@@ -55,7 +56,6 @@ const Home = () => {
 
   function loadMap(building_city,building_floor) {
     let svg_width,svg_height;
-
     let place = city_acron[(building_city).replace(" ","")];
     // console.log(place);
     if(place == 'BAR'|| place == 'a' ){
@@ -83,24 +83,12 @@ const Home = () => {
       console.log("WebSocket Client Connected");
       client_socket.send(JSON.stringify({place:place,svg_width:svg_width,svg_height:svg_height}));
     }
- 
-    client_socket.onmessage = (message) => {
-      
-      // console.log("[MESSAGE] " + message.data);
-      loadDesks(message.data,building_city,building_floor)
 
+    client_socket.onmessage = (message) => {
+      loadDesks(message.data,building_city,building_floor)
+      setPuestos([])
     }
   }
-
-  let th_all_desks = []
-     //region Variable para coger puestos
-    //  var{data,loading} = useQuery(cogerPuestos)
-    //  if(!loading){
-    //   console.log(data)
-    //  }
-    
-     
-
   //region  Descomentar para la creacion de la tabla Puesto
     // const[createpuesto,{error}] = useMutation(CREATE_PUESTO);
     // function cargamelaBaseDeDatos(ID,building_city,building_floor){
@@ -118,39 +106,67 @@ const Home = () => {
     // }
   //endregion
 
+  const[cogerPuestos,{data}] = useLazyQuery(cogerPuestosPasandoCiudadYPlanta,{
+    onCompleted: data => {
+      if(typeof data !== 'undefined' ){
+        // console.log(data);
+        puestos.push(data)
+      }
+  }});
+  
+  
 
-
-
-  const[cogerPuestos,result] = useLazyQuery(cogerPuestosPasandoCiudadYPlanta);
-  function loadDesks (positions, building_city,building_floor){
+  
+  let th_all_desks = []
+  const loadDesks = async (positions,building_city,building_floor) =>{
     // console.log(building_city);
-
     positions = JSON.parse(positions)
     let i = 0;
+    
     for (const position of positions) {
       //region OJO!!! DESCOMENTAR ESTO SOLO UNA VEZ PARA QUE TENER CARGADA LA BASE DE DATOS TENEIS QUE CARGARLA SECCION POR SECCION
         //NO OS PREOCUPEIS SI OS SALE EL ERROR DE DUPLICATED ENTRY ES POR QUE HABEIS DUPLICADO LA INSERCCION PERO LUEGO SE METE SOLO 1
         // cargamelaBaseDeDatos(i,building_city,building_floor)
       //endregion
+         await cogerPuestos(
+          {
+          variables:{
+          id_puesto:i+"_"+building_city+"_"+building_floor,
+          ciudad: building_city, 
+          n_planta:building_floor
+          
+        } 
+        })
+        
+          //  res.cogelPuestosPasandoCiudadYPlanta.map((puestos)=>{
+          //   console.log("SIUUUUU" +puestos.ocupado)
+          // })
 
 
-      //region CREACION ESTADO PUESTOSSSSSSSS
-      
-       const {resultado} = cogerPuestos({variables: {building_city,building_floor}})
-
-       
-     
-      console.log(JSON.stringify(resultado))
-       th_all_desks.push(<Desk pos_x={position[0]} pos_y = {position[1]}  deskStatus={"disponible"} tableId={i} building_city={building_city} building_floor={building_floor} 
+        th_all_desks.push(<Desk pos_x={position[0]} pos_y = {position[1]}  deskStatus={"disponible"} tableId={i} building_city={building_city} building_floor={building_floor} 
         date={date} start_time={startTime} end_time={endTime} />)
-       
+      // if(puestos.ocupado == true && puestos.disponibleParcialmente == false){
+      //   th_all_desks.push(<Desk pos_x={position[0]} pos_y = {position[1]}  deskStatus={"reservado"} tableId={i} building_city={building_city} building_floor={building_floor} 
+      //   date={date} start_time={startTime} end_time={endTime} />)
+      // }else if(puestos.ocupado == true && puestos.disponibleParcialmente == true){
+      //   th_all_desks.push(<Desk pos_x={position[0]} pos_y = {position[1]}  deskStatus={"parcialmente"} tableId={i} building_city={building_city} building_floor={building_floor} 
+      //   date={date} start_time={startTime} end_time={endTime} />)  
+      // }
+      // else if(puestos.ocupado == false && puestos.disponibleParcialmente == true){
+      //   th_all_desks.push(<Desk pos_x={position[0]} pos_y = {position[1]}  deskStatus={"parcialmente"} tableId={i} building_city={building_city} building_floor={building_floor} 
+      //   date={date} start_time={startTime} end_time={endTime} />)  
+      // }
+      // else{
+      //   th_all_desks.push(<Desk pos_x={position[0]} pos_y = {position[1]}  deskStatus={"disponible"} tableId={i} building_city={building_city} building_floor={building_floor} 
+      //   date={date} start_time={startTime} end_time={endTime} />)
+      // }
+        
         i++
-      //endregion
     }
-
     setAllDesks(th_all_desks);
-    console.log();
+
   }
+
 
 
   const renderBuildingMap = () => {

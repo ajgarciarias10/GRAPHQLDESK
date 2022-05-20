@@ -24,12 +24,14 @@ export const cogerPuestosPasandoId=   gql`
 }
 `
 export const cogerPuestosPasandoCiudadYPlanta=   gql`
-    query cogerPuestosPasandoCiudadYPlanta($ciudad:String, $n_planta:String){
-        cogelPuestosPasandoCiudadYPlanta{
+    query cogerPuestosPasandoCiudadYPlanta($id_puesto:String,$ciudad:String, $n_planta:String){
+        cogelPuestosPasandoCiudadYPlanta(id:$id_puesto,ciudad:$ciudad,n_planta:$n_planta){
+            id_puesto
             ocupado
             bloqueado
             disponibleParcialmente
-
+            ciudad
+            n_planta
         }
 }
 
