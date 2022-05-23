@@ -10,6 +10,8 @@ export const CREATE_PUESTO =   gql`
                          $disponibleParcialmente:Boolean!,
                          $bloqueado:Boolean!,
                          $ciudad:String!,
+                         $cantidadpuestosx: Int,
+                         $cantidadpuestosy:Int,
                          $n_planta:String!,
                          $observaciones: String! 
                          ){
@@ -20,6 +22,8 @@ export const CREATE_PUESTO =   gql`
                                 ocupado: $ocupado,
                                 disponibleParcialmente: $disponibleParcialmente,
                                 bloqueado: $bloqueado,
+                                cantidadpuestosx: $cantidadpuestosx,
+                                cantidadpuestosy :$cantidadpuestosy,
                                 ciudad: $ciudad,
                                 n_planta: $n_planta,
                                 observaciones: $observaciones
@@ -34,22 +38,20 @@ export const CREATE_PUESTO =   gql`
 export const CREATE_USER =   gql`
 
     mutation cr_usu(      
-                         $dni:String!,
+                         $id_usuario:String!,
                          $nombre: String!,
                          $apellidos:String!,
-                         $puestoempresa: String!,
                          $id_puesto_fk:String!
                          ){
                             cr_usu(
-                                dni: $dni,
+                                id_usuario: $id_usuario,
                                 nombre: $nombre,
                                 apellidos: $apellidos,
-                                puestoempresa: $puestoempresa,
                                 id_puesto_fk: $id_puesto_fk
                             )
                             {
                                 
-                                dni,
+                                id_usuario,
                                 nombre,
                                 puestoempresa
 

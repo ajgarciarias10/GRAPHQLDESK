@@ -8,6 +8,8 @@ export  const  cogerPuestos=   gql`
             disponibleParcialmente
             fecha_de_inicio
             ciudad
+            cantidadpuestosx
+            cantidadpuestosy
             n_planta
             observaciones
     }
@@ -20,6 +22,8 @@ export const cogerPuestosPasandoId=   gql`
             bloqueado
             disponibleParcialmente
             fecha_de_inicio
+            cantidadpuestosx
+            cantidadpuestosy
     }
 }
 `
@@ -29,6 +33,8 @@ export const cogerPuestosPasandoCiudadYPlanta=   gql`
             id_puesto
             ocupado
             bloqueado
+            cantidadpuestosx
+            cantidadpuestosy
             disponibleParcialmente
             ciudad
             n_planta

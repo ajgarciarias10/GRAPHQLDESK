@@ -20,6 +20,10 @@ export class puesto extends BaseEntity{
     @Column()
     n_planta!:String;
     @Column()
+    cantidadpuestosx!:number;
+    @Column()
+    cantidadpuestosy!:number;
+    @Column()
     observaciones!:String;
 
 

@@ -13,6 +13,11 @@ import { useState } from "react";
 const  Desk = (props) => {
     const [showingForm, setShowingForm] = useState(false)
     const [date, setDate] = useState();
+    const [deskStatus,setDeskStatus] = useState(props.deskStatus);
+    const [start_time, setStartTime] = useState(props.start_time);
+    const [end_time, setEndTime] = useState(props.end_time);
+
+
     
     const getDate = (date) =>{
         setDate(date);
@@ -52,41 +57,49 @@ const  Desk = (props) => {
         building_city_acron = city_acron[(props.building_city).replace(" ","")]
     }
 
+    const getPlacesStatus = (childDeskStatus,formDate,formStartTime,formEndTime) => {
+        deskStatus = childDeskStatus;
+        date = formDate;
+        start_time = formStartTime;
+        end_time = formEndTime;
+        console.log(childDeskStatus);
+        renderDeskType()
+    }
+
     const renderDeskType = () => {
 
-        if (props.deskStatus == "disponible" || props.deskStatus == "bloqueado") {
-    
-            return <Disponible deskStatus={props.deskStatus} statusColor={statusColor[props.deskStatus]} 
+        if (deskStatus == "disponible" || deskStatus == "bloqueado") {
+            return <Disponible deskStatus={deskStatus} statusColor={statusColor[deskStatus]} 
             tableId = {props.tableId} building_city={building_city_acron} building_floor={props.building_floor}/>;
 
-        } else if(props.deskStatus == "reservado" || props.deskStatus == "parcialmente"){
+        } else if(deskStatus == "reservado" || deskStatus == "parcialmente"){
 
-            return <Reservado deskStatus={props.deskStatus} statusColor={statusColor[props.deskStatus]} 
+            return <Reservado deskStatus={deskStatus} statusColor={statusColor[deskStatus]} 
             tableId = {props.tableId} building_city={building_city_acron} building_floor={props.building_floor}
-            usuario={"Eugenio Martín García"} solicitante={"Eugenio Martín García"} fecha={props.date} 
-            hora_inicio={props.start_time} hora_fin={props.end_time}/>;
+            usuario={"Eugenio Martín García"} solicitante={"Eugenio Martín García"} fecha={date} 
+            hora_inicio={start_time} hora_fin={end_time}/>;
 
-        }else if(props.deskStatus == "tu reservado"){
+        }else if(deskStatus == "tu reservado"){
 
-            return <TuReservado deskStatus={props.deskStatus} statusColor={statusColor[props.deskStatus]} 
+            return <TuReservado deskStatus={deskStatus} statusColor={statusColor[deskStatus]} 
             tableId = {props.tableId} building_city={building_city_acron} building_floor={props.building_floor}
-            usuario={"Eugenio Martín García"} solicitante={"Eugenio Martín García"} fecha={props.date} 
-            hora_inicio={props.start_time} hora_fin={props.end_time}/>;
+            usuario={"Eugenio Martín García"} solicitante={"Eugenio Martín García"} fecha={date} 
+            hora_inicio={start_time} hora_fin={end_time}/>;
 
         }
     }
 
 
     const doRenderForm = () =>{
-        if(props.deskStatus == "disponible" || props.deskStatus == 'parcialmente'){
-            return <GiDesk onMouseEnter={() => {setStatusColor(statusColor['seleccionado'])}} onMouseLeave={() => {setStatusColor(statusColor[props.deskStatus])}}
+        if(deskStatus == "disponible" || deskStatus == 'parcialmente'){
+            return <GiDesk onMouseEnter={() => {setStatusColor(statusColor['seleccionado'])}} onMouseLeave={() => {setStatusColor(statusColor[deskStatus])}}
             className={styles.free_place} style={{color:deskStatusColor}}
             onClick={() => {setShowingForm(true) }}/>
-        }else if(props.deskStatus == "bloqueado"){
+        }else if(deskStatus == "bloqueado"){
             return <GiDesk className={styles.free_place} style={{color:deskStatusColor}} />
         }else{
             return <GiDesk className={styles.free_place} style={{color:deskStatusColor}} 
-            onMouseEnter={() => {setStatusColor(statusColor['seleccionado'])}} onMouseLeave={() => {setStatusColor(statusColor[props.deskStatus])}}/>
+            onMouseEnter={() => {setStatusColor(statusColor['seleccionado'])}} onMouseLeave={() => {setStatusColor(statusColor[deskStatus])}}/>
         }
     }
  
@@ -94,7 +107,7 @@ const  Desk = (props) => {
         <div style={{display:'flex',flexWrap:'wrap'}}>
             {showingForm === true && (
                 <ResvForm tableId = {props.tableId} building_city={building_city_acron} building_floor={props.building_floor} 
-                    getDate={getDate} showingForm={getShowingForm} user={"Eugenio Martín García"}/>
+                    getDate={getDate} showingForm={getShowingForm} getPlacesStatus={getPlacesStatus} user={"Eugenio Martín García"}/>
             )}
             
             <div className={styles.main_container}style={{position:'absolute',top:(props.pos_y)+"px",left:(props.pos_x)+"px"}}>

@@ -6,15 +6,14 @@ import{messageType} from "../TypeDefs/Message"
 export const CREATE_USER = {
     type: UserType,
     args:{
-        dni: {type : GraphQLString},
+        id_usuario: {type : GraphQLInt},
         nombre: {type:GraphQLString},
         apellidos : {type:GraphQLString},
-        puestoempresa : {type:GraphQLString},
         id_puesto_fk : {type:GraphQLString},
     },
     async resolve(parent: any, args:any){
-        const{dni,nombre,apellidos,puestoempresa,id_puesto_fk} = args;
-        await User.insert({dni,nombre,apellidos,puestoempresa,id_puesto_fk});
+        const{id_usuario,nombre,apellidos,id_puesto_fk} = args;
+        await User.insert({id_usuario,nombre,apellidos,id_puesto_fk});
         return args;
     },
     
@@ -23,32 +22,31 @@ export const CREATE_USER = {
 export const DELETE_USER = {
     type: UserType,
     args:{
-        dni: {type:GraphQLString}
+        id_usuario: {type:GraphQLInt}
     },
     async resolve(parent: any, args:any){
-        const dni = args.dni;
-        await User.delete(dni);
+        const id_usuario = args.id_usuario;
+        await User.delete(id_usuario);
         return  {succesful : true, message: "Delete Done"};
     },
 };
 export const UPDATE_USER = {
     type: UserType,
     args:{
-        dni: {type : GraphQLString},
+        id_usuario: {type : GraphQLInt},
         nombre: {type:GraphQLString},
         apellidos : {type:GraphQLString},
-        puestoempresa : {type:GraphQLString},
         id_puesto_fk : {type:GraphQLString},
 
     },
     async resolve(parent: any, args:any){
-        const {dni,nombre,apellidos,puestoempresa,id_puesto_fk} = args ;
-        const puestos = await User.findOne({ where: {dni: dni }});
+        const {id_usuario,nombre,apellidos,id_puesto_fk} = args ;
+        const puestos = await User.findOne({ where: {id_usuario: id_usuario }});
         if(!puestos){
             throw new Error ("id_puesto: DOESNT EXIST")
         }
         //Actualizo de esta forma ya que solo se puede pasar dos argumentos por actualizacion
-        User.update({dni : dni},{id_puesto_fk : id_puesto_fk});
+        User.update({id_usuario : id_usuario},{id_puesto_fk : id_puesto_fk});
 
         return {succesful: true,message:"Puesto actualizado"};
 

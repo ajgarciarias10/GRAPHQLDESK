@@ -3,7 +3,8 @@ import {ApolloClient,InMemoryCache,ApolloProvider,useMutation} from '@apollo/cli
 import styles from './resv_form.module.css';
 import MyCalendar from '../mycalendar/mycalendar';
 import { FaCalendarDay } from "react-icons/fa";
-import{CREATE_PUESTO} from "../../pages/Graphql/Mutations"
+import{UPDATE_PUESTO} from "../../pages/Graphql/Mutations"
+import { CREATE_USER } from '../../pages/Graphql/Mutations';
 
 const ResvForm = (props) =>{
     let timeData = [
@@ -57,12 +58,13 @@ const ResvForm = (props) =>{
         { value: '19:45', name: '19:45'},
         { value: '20:00', name: '20:00'}
     ];
-    const [createpuesto,{error}] = useMutation(CREATE_PUESTO);
+    const [actpuesto,{error}] = useMutation(UPDATE_PUESTO);
+
     const client =  new ApolloClient({
         uri:  'http://127.0.0.1:3001/graphql',
         cache: new InMemoryCache()
     })
-  
+    const [cr7] = useMutation(CREATE_USER);
     var today = new Date();
     var t_date =  today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ( '0' + today.getDate()).slice(-2);
     const [startTime,setStartTime] = useState("8:00");
@@ -72,21 +74,50 @@ const ResvForm = (props) =>{
 
     function formSubmited(){
         
-        // let fechaDeINn = date + " "+ startTime +":00" + ".000000" 
-        // let fechaDeFin = date + " "+ endTime +":00" + ".000000"
+        let fechaDeINn = date + " "+ startTime +":00" + ".000000" 
+        let fechaDeFin = date + " "+ endTime +":00" + ".000000"
         
-        // createpuesto({
-        //     variables: {id_puesto: props.tableId,fecha_de_inicio : fechaDeINn,fecha_de_fin : fechaDeFin,ocupado : true,
-        //         disponibleParcialmente:false,bloqueado:false,ciudad: props.building_city,
-        //         n_planta: props.building_floor,observaciones: document.getElementById('observaciones').value},
 
-        // })
-        // createUSER(
-        //     {dni:"ME LA MAMAS123",nombre: "Eugenio",apellidos : " Martín García",puestoempresa:"Empleado",id_puesto_fk: props.tableId
-        //     },
-        // )
+        if(fechaDeINn ==date + " "+ "8:00" +":00" + ".000000" && fechaDeFin == date + " "+ "18:00" +":00" + ".000000"){
+            actpuesto({
+                variables: {id_puesto: props.tableId,
+                            ocupado:true,
+                            disponibleParcialmente:false,
+                            bloqueado:false,
+                            fecha_de_inicio:fechaDeINn,
+                            fecha_de_fin:fechaDeFin,
+                            observaciones:  document.getElementById('observaciones').value
+                        }
 
-       location.reload
+
+            })
+            // cr7({
+            //     variables: {id_usuario: null,nombre: "Eugenio",apellidos : " Martín García",id_puesto_fk: props.tableId
+            //     },
+            // }
+            // )
+        }else{
+            actpuesto({
+                variables: {id_puesto: props.tableId,
+                            ocupado:true,
+                            disponibleParcialmente:true,
+                            bloqueado:false,
+                            fecha_de_inicio:fechaDeINn,
+                            fecha_de_fin:fechaDeFin,
+                            observaciones:document.getElementById('observaciones').value
+                        }
+
+
+            })
+            // cr7({
+            //     variables: {id_usuario: null,nombre: "Eugenio",apellidos : " Martín García",id_puesto_fk: props.tableId
+            //     },
+            // }
+            // )
+
+        }
+        props.getPlacesStatus("reservado",date,startTime,endTime)
+
     }
 
     const dateChanged = (optionSelected) =>{

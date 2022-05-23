@@ -12,12 +12,14 @@ export const CREATE_Puesto = {
         disponibleParcialmente: {type:GraphQLBoolean},
         bloqueado: {type:GraphQLBoolean},
         ciudad: {type:GraphQLString},
+        cantidadpuestosx :{type:GraphQLInt},
+        cantidadpuestosy : {type:GraphQLInt},
         n_planta: {type:GraphQLString},
         observaciones: {type:GraphQLString},
     },
     async resolve(parent: any, args:any){
-        const{id_puesto,fecha_de_inicio,fecha_de_fin,ocupado,disponibleParcialmente,bloqueado,ciudad,n_planta,observaciones} = args;
-        await puesto.insert({id_puesto,fecha_de_inicio,fecha_de_fin,ocupado,disponibleParcialmente,bloqueado,ciudad,n_planta,observaciones});
+        const{id_puesto,fecha_de_inicio,fecha_de_fin,ocupado,disponibleParcialmente,bloqueado,ciudad,cantidadpuestosx,cantidadpuestosy,n_planta,observaciones} = args;
+        await puesto.insert({id_puesto,fecha_de_inicio,fecha_de_fin,ocupado,disponibleParcialmente,bloqueado,ciudad,cantidadpuestosx,cantidadpuestosy,n_planta,observaciones});
         return args;
     },
 };
@@ -58,7 +60,7 @@ export const UPDATE_PUESTO = {
         puesto.update({id_puesto : id_puesto}, {fecha_de_inicio : fecha_de_inicio})
         puesto.update({id_puesto : id_puesto}, {fecha_de_fin : fecha_de_fin})
         puesto.update({id_puesto : id_puesto}, {observaciones : observaciones})
-        return {succesful: true,message:"Contraseña Actualizada"};
+        return {succesful: true,message:"PUESTO Actualizado"};
 
      
     },
