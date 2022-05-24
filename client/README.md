@@ -1,34 +1,40 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+---------------------------------------------------
+#Bienvenidos a T-Systems Iberia DeskSharing
+---------------------------------------------------
 
-## Getting Started
+--Requisitos iniciales--
+Para la parte del servidor(): 
+    Descargar Xampp : https://www.apachefriends.org/es/download.html
+    npm install --global yarn
+    npm install -g typescript
+    CD SEERVER 
+    yarn init
+    tsc --init
+    yarn add typescript ts-node express cors nodemon
+    yarn add @types/cors @types/express @types/node
+    ------------------------------------------------------------------
+    cd server
+    RECUERDA EN 
+    y yarn dev para iniciar el proyecto
+    //Maquina GraphQL iniciada
+    http://localhost:3001/GRAPHQL
+    Crear dentro de el una BD que se llame : reservadepuestos
+    Esto es ya que desde index.ts del server el que no esta dentro del schema se le pasan las entidades que queremos AutoCrear en la base de  datos.
+    Y esto se hace accediendo a index.ts y en el apartado de synchronize = true.!!!AVISO IMPORTANTE SOLO PONERLO TRUE PARA CUANDO VAYAIS A CREAR NUEVAS ENTIDADES(TABLAS).
+------------------------------------------------------------------    
+Videos de GraphQL
+    PedroTech Part1 (QUERIES AND INSERT) :https://www.youtube.com/watch?v=fov5e6XJgwc&t=772s
+    PedroTech Part2(DELETE AND UPDATE) :https://www.youtube.com/watch?v=mdnQwlxiQ0Q
+    PedroTech Part3(CONEXION FRONT Y BACK-ELLOS LO HACEN CON TYPESCRIPT PERO DA IGUAL SE PUEDE CON JAVASCRIPT) :https://www.youtube.com/watch?v=SXNrqCGT6uI  
+    PedroTech Part4 :https://www.youtube.com/watch?v=LAFSppcFppE
+    //Consultas con argumentos y mas
+    PedroTech Part4 :https://www.youtube.com/watch?v=8_DuZHJBB-k
+Doc: https://typeorm.io/
+------------------------------------------------------------------
+Ademas de todo esto la parte del codigo la tendreis explicada
+------------------------------------------------------------------
+Parte del cliente():
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
