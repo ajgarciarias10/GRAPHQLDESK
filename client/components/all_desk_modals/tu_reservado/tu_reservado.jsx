@@ -31,6 +31,7 @@ const TuReservado = (props) =>{
 
         })
 
+        props.getStatusUpdate('disponible');
 
 
     }

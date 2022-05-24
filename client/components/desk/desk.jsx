@@ -49,7 +49,11 @@ const  Desk = (props) => {
         setShowingForm(date);
     }   
 
-    const getStatusUpdate = (form_deskStatus,form_start_time, form_end_time, form_date) =>{
+    const getStatusUpdate = (form_deskStatus,
+        form_start_time = start_time, 
+        form_end_time = end_time, 
+        form_date = date) =>{
+
         setDeskStatus(form_deskStatus);
         setStartTime(form_start_time);
         setEndTime(form_end_time);
@@ -94,7 +98,7 @@ const  Desk = (props) => {
             return <TuReservado deskStatus={deskStatus} statusColor={deskStatusColor = "purple"? "blue":deskStatusColor} 
             tableId = {props.tableId} building_city={building_city_acron} building_floor={props.building_floor}
             usuario={"Eugenio Martín García"} solicitante={"Eugenio Martín García"} fecha={date} 
-            hora_inicio={start_time} hora_fin={end_time}/>;
+            hora_inicio={start_time} hora_fin={end_time} getStatusUpdate={getStatusUpdate}/>;
 
         }
     }
