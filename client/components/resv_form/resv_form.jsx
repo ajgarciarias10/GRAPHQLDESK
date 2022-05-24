@@ -65,11 +65,14 @@ const ResvForm = (props) =>{
         cache: new InMemoryCache()
     })
     const [cr7] = useMutation(CREATE_USER);
+
     var today = new Date();
     var t_date =  today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ( '0' + today.getDate()).slice(-2);
+    
     const [startTime,setStartTime] = useState("8:00");
     const [endTime,setEndTime] = useState("18:00");
     const [date, setDate] = useState(t_date);
+    const [isFavourite,setFavourite] = useState(false);
     
 
     function formSubmited(){
@@ -116,12 +119,13 @@ const ResvForm = (props) =>{
             )
 
         }
-        props.getPlacesStatus("reservado",date,startTime,endTime)
+        props.getStatusUpdate("reservado",date,startTime,endTime)
 
     }
 
     const dateChanged = (optionSelected) =>{
         setDate(optionSelected);
+        props.getDate(optionSelected);
     }
 
     const handleKeyEvent = (event) =>{
@@ -131,6 +135,7 @@ const ResvForm = (props) =>{
 
         }else if(event.key == 'Enter'){
             props.showingForm(false);
+            formSubmited()
             console.log("data should be sended");
         }
     }
@@ -145,6 +150,13 @@ const ResvForm = (props) =>{
             <ApolloProvider client={client}>
                 <div className={styles.bg_container} ref={focusDiv} tabIndex={0} onKeyUp={(event) => handleKeyEvent(event)}>
                     <div className={styles.form_container}>
+                        <label className={styles.form_title}>Mesa {props.tableId} {props.building_city} {props.building_floor} 
+                            {isFavourite ? 
+                            <AiFillStar className={styles.fav_icon} onClick={() => {setFavourite(false)}} /> 
+                            : 
+                            <AiOutlineStar className={styles.fav_icon} onClick={() => {setFavourite(true)}} />}
+                        </label>
+
                         <label className={styles.form_title}>Mesa {props.tableId} {props.building_city} {props.building_floor}</label>
                         
                         <div className={styles.user_input_container}>

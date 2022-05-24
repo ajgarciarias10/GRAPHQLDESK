@@ -79,14 +79,12 @@ const Home = () => {
     const client_socket = new W3CWebSocket('ws://192.168.2.218:5050');
 
     client_socket.onopen = () => {
-      console.log("WebSocket Client Connected");
+      // console.log("WebSocket Client Connected");
       client_socket.send(JSON.stringify({place:place,svg_width:svg_width,svg_height:svg_height}));
     }
 
     client_socket.onmessage = (message) => {
       loadDesks(message.data,building_city,building_floor)
-      
-
     }
   }
 
