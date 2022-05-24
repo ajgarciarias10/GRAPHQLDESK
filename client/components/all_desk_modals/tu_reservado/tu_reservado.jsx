@@ -1,9 +1,38 @@
 import styles from './tu_reservado.module.css';
-
+import { useRef,useEffect,useState } from 'react';
+import {ApolloClient,InMemoryCache,ApolloProvider,useMutation} from '@apollo/client';
+import{UPDATE_PUESTO} from "../../../pages/Graphql/Mutations"
+import { UPDATE_USER } from '../../../pages/Graphql/Mutations';
 const TuReservado = (props) =>{
-
+    var today = new Date();
+    const [actpuesto,{error}] = useMutation(UPDATE_PUESTO);
+    const [actuser] = useMutation(UPDATE_USER);
+    var t_date =  today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ( '0' + today.getDate()).slice(-2);
+    const [date, setDate] = useState(t_date);
     const BtnCancelClicked = () =>{
         console.log("[CANCEL] " +  props.fecha);
+        let fechaDeINn = date + " "+ "8:00" +":00" + ".000000" 
+        let fechaDeFin = date + " "+ "18:00" +":00" + ".000000"
+        actpuesto({
+            variables: {id_puesto: props.tableId,
+                        ocupado:false,
+                        disponibleParcialmente:false,
+                        bloqueado:false,
+                        fecha_de_inicio:fechaDeINn,
+                        fecha_de_fin:fechaDeFin,
+                        observaciones: ""
+                    }
+        })
+        actuser({
+            variables:{
+                id_usuario:4,
+                id_puesto_fk: null
+            } 
+
+        })
+
+
+
     }
 
         return (

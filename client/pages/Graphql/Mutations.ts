@@ -38,7 +38,7 @@ export const CREATE_PUESTO =   gql`
 export const CREATE_USER =   gql`
 
     mutation cr_usu(      
-                         $id_usuario:String!,
+                         $id_usuario:Int,
                          $nombre: String!,
                          $apellidos:String!,
                          $id_puesto_fk:String!
@@ -53,8 +53,6 @@ export const CREATE_USER =   gql`
                                 
                                 id_usuario,
                                 nombre,
-                                puestoempresa
-
                             }  
                          }
 `
@@ -80,4 +78,27 @@ export const UPDATE_PUESTO = gql`
         id_puesto
     }
   }
+`;
+export const BORRAR_PUESTO = gql`
+  mutation borraPuestoPorId(
+    $id_puesto: String!
+  ) {
+    borraPuestoPorId(
+        id_puesto: $id_puesto
+    ) {
+        id_puesto
+    }
+  }
+`;
+export const UPDATE_USER= gql`
+  mutation actualizaEmpleado(
+    $id_usuario: Int!,
+    $id_puesto_fk:  String
+  ){
+    actualizaEmpleado(id_usuario:$id_usuario,id_puesto_fk:$id_puesto_fk){
+      nombre
+  }
+
+}
+
 `;

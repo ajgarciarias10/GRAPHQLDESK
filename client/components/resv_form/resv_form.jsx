@@ -91,11 +91,11 @@ const ResvForm = (props) =>{
 
 
             })
-            // cr7({
-            //     variables: {id_usuario: null,nombre: "Eugenio",apellidos : " Martín García",id_puesto_fk: props.tableId
-            //     },
-            // }
-            // )
+            cr7({
+                variables: {id_usuario: null,nombre: "Eugenio",apellidos : " Martín García",id_puesto_fk: props.tableId
+                },
+            }
+            )
         }else{
             actpuesto({
                 variables: {id_puesto: props.tableId,
@@ -109,11 +109,11 @@ const ResvForm = (props) =>{
 
 
             })
-            // cr7({
-            //     variables: {id_usuario: null,nombre: "Eugenio",apellidos : " Martín García",id_puesto_fk: props.tableId
-            //     },
-            // }
-            // )
+            cr7({
+                variables: {id_usuario: null,nombre: "Eugenio",apellidos : " Martín García",id_puesto_fk: props.tableId
+                },
+            }
+            )
 
         }
         props.getPlacesStatus("reservado",date,startTime,endTime)

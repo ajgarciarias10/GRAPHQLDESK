@@ -95,7 +95,7 @@ const Home = () => {
         if(typeof data !== 'undefined' ){  
           // console.log(data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosx)
             if(data.cogelPuestosPasandoCiudadYPlanta.ocupado == true && data.cogelPuestosPasandoCiudadYPlanta.disponibleParcialmente == false){
-              th_all_desks.push(<Desk pos_x={data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosx} pos_y = {data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosy}  deskStatus={"reservado"} 
+              th_all_desks.push(<Desk pos_x={data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosx} pos_y = {data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosy}  deskStatus={"tu reservado"} 
               tableId={data.cogelPuestosPasandoCiudadYPlanta.id_puesto} building_city={placesData[0]} building_floor={placesData[1]} 
               date={date} start_time={startTime} end_time={endTime} />)
             }else if(data.cogelPuestosPasandoCiudadYPlanta.ocupado == true && data.cogelPuestosPasandoCiudadYPlanta.disponibleParcialmente == true){
