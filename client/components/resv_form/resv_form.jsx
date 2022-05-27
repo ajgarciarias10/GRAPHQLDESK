@@ -5,6 +5,9 @@ import MyCalendar from '../mycalendar/mycalendar';
 import { FaCalendarDay } from "react-icons/fa";
 import{UPDATE_PUESTO} from "../../pages/Graphql/Mutations"
 import { CREATE_USER } from '../../pages/Graphql/Mutations';
+import { AiOutlineStar }  from "react-icons/ai";
+import { AiFillStar }  from "react-icons/ai";
+
 
 const ResvForm = (props) =>{
     let timeData = [
@@ -156,8 +159,6 @@ const ResvForm = (props) =>{
                             : 
                             <AiOutlineStar className={styles.fav_icon} onClick={() => {setFavourite(true)}} />}
                         </label>
-
-                        <label className={styles.form_title}>Mesa {props.tableId} {props.building_city} {props.building_floor}</label>
                         
                         <div className={styles.user_input_container}>
                             <label className={styles.user_input_label}>Usuario</label>
