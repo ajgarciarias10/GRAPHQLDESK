@@ -7,8 +7,6 @@ import Desk from "../components/desk/desk";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 
 
-
-
 const Home = () => {
   const [placesData, setPlacesData] = useState(["a","a","a"]);
   const [startTime,setStartTime] = useState();
@@ -27,27 +25,33 @@ const Home = () => {
     "ValenciaSorolla":"VAL",
 }
 
+  //Method for getting data from childElement
   const getPlacesData = (childData) => {
     setPlacesData(childData.split(" - "));
     loadMap((childData.split(" - "))[0],(childData.split(" - "))[1])
   }
 
+  //Method for getting data from childElement
   const getStartTime = (timeData) =>{
     setStartTime(timeData);
   }
 
+  //Method for getting data from childElement
   const getEndTime = (timeData) =>{
     setEndTime(timeData);
   }
 
+  //Method for getting data from childElement
   const getDate = (date) =>{
     setDate(date);
   }
 
+  //Method for getting data from childElement
   const getButtonActive = (isModButtonActive) =>{
     setModButtonActive(isModButtonActive);
   }
 
+  // Set area selector css, (not working in css styles script)
   const adjustSelectGroupStyle = () =>{
     let selectGroup = document.getElementsByClassName('man')[0];
     selectGroup.style.position = 'absolute';
@@ -60,13 +64,12 @@ const Home = () => {
     cursor.style.border = 'solid 1px #E20074';
     cursor.style.background = 'rgba(226, 0, 116, 0.4)';
   }
-  
-  function loadMap(building_city,building_floor) {
-    // console.log(building_city);
-    let svg_width,svg_height;
 
+  //Method for loading building svg map and data
+  function loadMap(building_city,building_floor) {
+    let svg_width,svg_height;
     let place = city_acron[(building_city).replace(" ","")];
-    // console.log(place);
+
     if(place == 'BAR'|| place == 'a' ){
       svg_width = 1920;
       svg_height = 473;
@@ -84,14 +87,17 @@ const Home = () => {
       svg_height = 365;
     }
 
+    // ip should be updated when changing computer for conection to python websocket, port is the same unless if it was changed on python script
     place = place + "_" + (building_floor).replace(" ","_");
     const client_socket = new W3CWebSocket('ws://192.168.2.218:5050');
 
+    // sending data to websocket, original svg width and height needed for a better detection
     client_socket.onopen = () => {
       console.log("WebSocket Client Connected");
       client_socket.send(JSON.stringify({place:place,svg_width:svg_width,svg_height:svg_height}));
     }
 
+    // all desk positions received from websocket server
     client_socket.onmessage = (message) => {
       loadDesks(message.data,building_city,building_floor)
     }
@@ -116,7 +122,8 @@ const Home = () => {
     setAllAdminDesks(th_all_admin_desk);
   }
 
-
+  //Render the proper svg from selected building 
+  //TODO: Responsive svg 
   const renderBuildingMap = () => {
     if (placesData[0] == "Barcelona22@" && placesData[1] == "Planta 2" || placesData[0] == 'a') {
         return <svg width="1920" height="473" viewBox="0 0 2827 573" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -175,26 +182,28 @@ const Home = () => {
 
   }
 
+  // Method called when admin is selecting desks
   const handleSelecting = () => {
   }
 
-  // const handleSelectionClear = () => {
-  //   console.log("handleSelectionClear");
-  // }
+  // Method called when admin cancel selecting
+  const handleSelectionClear = () => {
+  }
 
+  //Method called when admin finish selecting
   const handleSelectionFinish = (selectedKeys) =>{
-    console.log(selectedKeys);
-    selectedKeys.map((item,i) =>{
-      console.log(item);
-      console.log("Key: " + i);
-    });
+    // console.log(selectedKeys);
+    // selectedKeys.map((item,i) =>{
+    //   console.log(item);
+    //   console.log("Key: " + i);
+    // });
   }
   
   return (
     <>
       <Header_Nav/>
       <Places_Form getPlacesData={getPlacesData} getStartTime={getStartTime} getEndTime={getEndTime} getDate={getDate} getButtonActive={getButtonActive} isAdmin={true}/>
-      
+      {/*Render admin desk if mod places button is on, else will display normal user desks */}
       {isModButtonActive ? 
           
           <div onMouseMove={() => {adjustSelectGroupStyle()}} style={{width:'100vw',height:'100vh',position:'absolute',top:0,zIndex:-20,cursor:'crosshair'}}>
@@ -207,12 +216,8 @@ const Home = () => {
               allowClickWithoutSelected={false}
               duringSelection={handleSelecting}
               onSelectionFinish={handleSelectionFinish}
-              ignoreList={[
-                '.not-selectable', 
-                // '.item:nth-child(10)', 
-                // '.item:nth-child(27)'
-              ]}
-              >
+              ignoreList={['.not-selectable']}
+            >
               <div style={{position:'absolute',width:'100vw',height:'100vh', top:0,display:"flex"}}>
                 <div style={{position:'relative',alignSelf:'center',width:'100vw'}}>
                     {renderBuildingMap()}

@@ -5,20 +5,11 @@ import Header_Nav from "../components/header_nav/header_nav"
 import Places_Form from "../components/places_menu/places_menu"
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import{cogerPuestosPasandoCiudadYPlanta, cogerPuestosPasandoId} from "../pages/Graphql/Queries"
-//region Creacion de puesto
-  // import {CREATE_PUESTO} from '../pages/Graphql/Mutations'
-//endregion
-//region Select query *
-  import{cogerPuestos} from '../pages/Graphql/Queries'
-//endregion
+import{cogerPuestos} from '../pages/Graphql/Queries'
 
 
 
 const Home = () => {
-  const client =  new ApolloClient({
-    uri:  'http://127.0.0.1:3001/graphql',
-    cache: new InMemoryCache()
-})
   const [placesData, setPlacesData] = useState(["a","a","a"]);
   const [startTime,setStartTime] = useState();
   const [endTime,setEndTime] = useState();
@@ -32,31 +23,38 @@ const Home = () => {
       "ValenciaSorolla":"VAL",
   }
 
-
+  const client =  new ApolloClient({
+    uri:  'http://127.0.0.1:3001/graphql',
+    cache: new InMemoryCache()
+  })
+  
+  //Method for getting data from childElement
   const getPlacesData = (childData) => {
     setPlacesData(childData.split(" - ")); 
-    // console.log(childData.split(" - ")[0]);
     loadMap((childData.split(" - "))[0],(childData.split(" - "))[1])
   }
 
+  //Method for getting data from childElement
   const getStartTime = (timeData) =>{
     setStartTime(timeData);
   }
 
+  //Method for getting data from childElement
   const getEndTime = (timeData) =>{
     setEndTime(timeData);
   }
 
+  //Method for getting data from childElement
   const getDate = (date) =>{
     setDate(date);
 
   }
 
-
+  //Method for loading building svg map and data
   function loadMap(building_city,building_floor) {
     let svg_width,svg_height;
     let place = city_acron[(building_city).replace(" ","")];
-    // console.log(place);
+
     if(place == 'BAR'|| place == 'a' ){
       svg_width = 1920;
       svg_height = 473;
@@ -75,14 +73,13 @@ const Home = () => {
     }
 
     place = place + "_" + (building_floor).replace(" ","_");
-    // Actuializar ip cuando cambio de orenador
+    // ip should be updated when changing computer for conection to python websocket, port is the same unless if it was changed on python script
     const client_socket = new W3CWebSocket('ws://192.168.2.218:5050');
-
+    // sending data to websocket, original svg width and height needed for a better detection
     client_socket.onopen = () => {
-      // console.log("WebSocket Client Connected");
       client_socket.send(JSON.stringify({place:place,svg_width:svg_width,svg_height:svg_height}));
     }
-
+    // all desk positions received from websocket server
     client_socket.onmessage = (message) => {
       loadDesks(message.data,building_city,building_floor)
     }
@@ -120,31 +117,7 @@ const Home = () => {
           }            
   }
 });
- 
-   
-    //region  Descomentar para la creacion de la tabla Puesto
-    // const[createpuesto,{error}] = useMutation(CREATE_PUESTO);
-    // function cargamelaBaseDeDatos(ID,building_city,building_floor,positionx,positiony){
-    //   let fechaDeFin ="2022-05-18 15:33:28.000000"
-    //   let fechaDeINn ="2022-05-18 08:33:28.000000"
-    //   let id_puesto = ID+"_"+building_city+"_"+building_floor
-    //   console.log(id_puesto)
-          
-    //       createpuesto({
-    //           variables: {id_puesto: id_puesto ,fecha_de_inicio : fechaDeINn,
-    //                     fecha_de_fin : fechaDeFin,
-    //                     ocupado : false,
-    //                     cantidadpuestosx:positionx,
-    //                     cantidadpuestosy:positiony,
-    //                     disponibleParcialmente:false,bloqueado:false,ciudad: building_city,
-    //                     n_planta: building_floor,observaciones: ""},
-
-    //       })
-    // }
-  //endregion
-
   
-
   const loadDesks = async (positions,building_city,building_floor) =>{
     positions = JSON.parse(positions)
     window.th_all_desks = []
@@ -170,7 +143,8 @@ const Home = () => {
   }
 
 
-
+  //Render the proper svg from selected building 
+  //TODO: Responsive svg 
   const renderBuildingMap = () => {
     if (placesData[0] == "Barcelona22@" && placesData[1] == "Planta 2" || placesData[0] == 'a') {
         return <svg width="1920" height="473" viewBox="0 0 2827 573" fill="none" xmlns="http://www.w3.org/2000/svg">

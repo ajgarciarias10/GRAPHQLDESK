@@ -9,8 +9,8 @@ const TuReservado = (props) =>{
     const [actuser] = useMutation(UPDATE_USER);
     var t_date =  today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ( '0' + today.getDate()).slice(-2);
     const [date, setDate] = useState(t_date);
+
     const BtnCancelClicked = () =>{
-        console.log("[CANCEL] " +  props.fecha);
         let fechaDeINn = date + " "+ "8:00" +":00" + ".000000" 
         let fechaDeFin = date + " "+ "18:00" +":00" + ".000000"
         actpuesto({

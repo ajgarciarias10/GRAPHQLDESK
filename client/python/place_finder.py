@@ -5,16 +5,17 @@ import websockets
 import math
 import json
 
+#Temp conecction to obtain computer ip
 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 sock.connect(('8.8.8.8',80))
 WiFi_ip, port = sock.getsockname()
 sock.close()
 
-
-
+# Function for getting building places positions
 async def getDeskPositionsFromImage(websocket):
 
     print(f"[CONNECTION FROM] {websocket.remote_address}")
+    # Receive data and parsed to json
     data = json.loads(await websocket.recv())
 
     place_name =data['place']
@@ -28,7 +29,7 @@ async def getDeskPositionsFromImage(websocket):
     # Setup SimpleBlobDetector parameters.
     params = cv2.SimpleBlobDetector_Params()
 
-    # # Change thresholds
+    # Change thresholds
     params.minThreshold = 10
     params.maxThreshold = 200
 
@@ -40,34 +41,22 @@ async def getDeskPositionsFromImage(websocket):
     params.filterByArea = True
     params.minArea = 25
 
-    # # Create a detector with the parameters
-    # # OLD: detector = cv2.SimpleBlobDetector(params)
+    # Create a detector with the parameters
+    # OLD: detector = cv2.SimpleBlobDetector(params)
     detector = cv2.SimpleBlobDetector_create(params)
 
-    # # Detect blobs.
+    # Detect blobs.
     keypoints = detector.detect(im)
 
     Desks_Positions = []
-
+    # Save al keypoints into an array
     for keypoint in keypoints:
         x = math.floor(keypoint.pt[0]) 
         y = math.floor(keypoint.pt[1])
         Desks_Positions.append([x,y])
-
+    # Send data back to client
     await websocket.send(json.dumps(Desks_Positions))
     await websocket.close()
-
-    print(f"[CONNECTION CLOSED] {websocket.remote_address}")
-
-
-async def test(websocket):
-    print(f"[CONNECTION FROM] {websocket.remote_address}")
-
-    data = json.loads(await websocket.recv())
-    print(f"[DATA RECV] {data['place']}")
-    # async for message in websocket:
-    #     print(f"[MESSAGE SEND] {message}")
-    await websocket.send("fefw")
 
     print(f"[CONNECTION CLOSED] {websocket.remote_address}")
 
