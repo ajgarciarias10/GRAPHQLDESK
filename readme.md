@@ -37,9 +37,9 @@ flowchart LR
     A[Navegador / Cliente Web] -- HTTP --> B[/API GraphQL/]
     B -- Resolvers --> C[Servicios]
     C -- TypeORM --> D[(MySQL)]
-    subgraph Backend (Node.js + TypeScript)
-    B
-    C
+    subgraph Backend
+        B
+        C
     end
 ```
 
