@@ -1,265 +1,184 @@
-# GRAPHQLDESK — DeskSharing con GraphQL
+# GRAPHQLDESK
 
-> Proyecto didáctico para gestionar la **reserva de puestos** (desk sharing) con **GraphQL** en el backend y un **cliente web** sencillo.
-
-## 📌 Índice
-
-* [Descripción](#descripción)
-* [Arquitectura](#arquitectura)
-* [Tecnologías](#tecnologías)
-* [Requisitos previos](#requisitos-previos)
-* [Arranque rápido](#arranque-rápido)
-
-  * [1) Backend `server`](#1-backend-server)
-  * [2) Frontend `client`](#2-frontend-client)
-* [Configuración de base de datos](#configuración-de-base-de-datos)
-* [Variables de entorno](#variables-de-entorno)
-* [Scripts útiles](#scripts-útiles)
-* [Endpoint y Playground](#endpoint-y-playground)
-* [Ejemplos de consultas GraphQL](#ejemplos-de-consultas-graphql)
-* [Estructura del repositorio](#estructura-del-repositorio)
-* [Referencia y recursos](#referencia-y-recursos)
-* [Contribuir](#contribuir)
-* [Licencia](#licencia)
+Aplicacion didactica para gestionar reservas de puestos (desk sharing) con un backend GraphQL, un frontend Next.js y un microservicio auxiliar en Python que calcula posiciones de escritorios a partir de planos.
 
 ---
 
-## Descripción
+## Contenido rapido
+- [Resumen del sistema](#resumen-del-sistema)
+- [Versiones probadas](#versiones-probadas)
+- [Requisitos previos](#requisitos-previos)
+- [Estructura del repositorio](#estructura-del-repositorio)
+- [Configuracion y variables de entorno](#configuracion-y-variables-de-entorno)
+- [Puesta en marcha](#puesta-en-marcha)
+  - [1. Backend GraphQL (`server`)](#1-backend-graphql-server)
+  - [2. Servicio de vision artificial (`client/python`)](#2-servicio-de-vision-artificial-clientpython)
+  - [3. Frontend Next.js (`client`)](#3-frontend-nextjs-client)
+- [Base de datos de ejemplo](#base-de-datos-de-ejemplo)
+- [Comandos utiles](#comandos-utiles)
+- [Solucion de problemas](#solucion-de-problemas)
+- [Recursos adicionales](#recursos-adicionales)
 
-**GRAPHQLDESK** es una app sencilla para **gestionar reservas de puestos** en una oficina (alta, baja, edición y consulta de reservas y puestos). El objetivo principal es **aprender y practicar** GraphQL + TypeORM con una base de datos MySQL (XAMPP) y un cliente web mínimo para probar el flujo end‑to‑end.
+---
 
-> En el repo hay una presentación de diapositivas: `desk_presentacion.pptx`.
-
-## Arquitectura
-
-```mermaid
-flowchart LR
-    A[Navegador / Cliente Web] -- HTTP --> B[/API GraphQL/]
-    B -- Resolvers --> C[Servicios]
-    C -- TypeORM --> D[(MySQL)]
-    subgraph Backend
-        B
-        C
-    end
+## Resumen del sistema
+```
+Navegador ──> Next.js (client) ──> GraphQL (server) ──> MySQL
+                                    ↑
+                                    └─ WebSocket opcional hacia servicio Python que detecta puestos sobre planos SVG/PNG
 ```
 
-## Tecnologías
+---
 
-* **Node.js**, **TypeScript**
-* **Express** + **GraphQL** (Apollo Server o similar)
-* **TypeORM** (ORM)
-* **MySQL** (via **XAMPP**) como motor de BD
-* Cliente web con **HTML/CSS/JS** (y/o framework ligero)
-* Utilidades: **ts-node**, **nodemon**, **cors**, **yarn**
+## Versiones probadas
+Las pruebas mas recientes se realizaron con las siguientes versiones (ajusta si trabajas con otras):
+
+| Componente | Version |
+|------------|---------|
+| Node.js    | 20.11.1 |
+| npm        | 10.3.0  |
+| Yarn       | 1.22.22 |
+| Next.js    | 16.0.1  |
+| React      | 18.2.0  |
+| TypeScript | 4.6.x   |
+| MySQL      | 8.0.x   |
+| Python     | 3.11.x  |
+
+---
 
 ## Requisitos previos
+- Node.js >= 18 (recomendado 20 LTS) y npm (o Yarn si lo prefieres)
+- Python 3.10 o superior con `opencv-python` y `websockets`
+- Servidor MySQL o MariaDB (XAMPP funciona)
+- Git
+- Opcional: cliente GraphQL (Apollo Sandbox, Insomnia, etc.)
 
-* **Node.js 18+** y **npm**
-* **Yarn** (opcional pero recomendado)
-* **XAMPP** (para MySQL/MariaDB) o un servidor MySQL equivalente
-* **Git**
-
-## Arranque rápido
-
-Clona el repositorio y entra en él:
-
-```bash
-git clone https://github.com/ajgarciarias10/GRAPHQLDESK.git
-cd GRAPHQLDESK
-```
-
-### 1) Backend `server`
-
-Instala dependencias y configura la BD.
-
-```bash
-cd server
-# con yarn
-yarn install
-# o con npm
-npm install
-```
-
-Crea la BD `reservadepuestos` en MySQL (ver sección de [Configuración de base de datos](#configuración-de-base-de-datos)).
-
-Arranca en desarrollo:
-
-```bash
-# con yarn
-yarn dev
-# o con npm
-npm run dev
-```
-
-Por defecto el servidor expone GraphQL en **[http://localhost:3001/GRAPHQL](http://localhost:3001/GRAPHQL)**.
-
-> **Nota importante (TypeORM)**: en `DataSource`/`AppDataSource` asegúrate de usar `synchronize: true` **solo** cuando vayas a crear/alterar entidades. En producción debe estar en `false` para evitar cambios no controlados.
-
-### 2) Frontend `client`
-
-En otra terminal:
-
-```bash
-cd client
-# con yarn
-yarn install && yarn dev
-# o con npm
-npm install && npm run dev
-```
-
-Sigue la URL que te muestre el dev‑server (p. ej. `http://localhost:5173/`).
-
-## Configuración de base de datos
-
-1. Abre **XAMPP** y arranca **MySQL**.
-2. Crea una BD vacía llamada **`reservadepuestos`**.
-3. Ajusta usuario/contraseña en las variables de entorno del backend.
-
-Si necesitas un usuario local típico:
-
-```sql
-CREATE DATABASE reservadepuestos CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'desk'@'localhost' IDENTIFIED BY 'desk123';
-GRANT ALL PRIVILEGES ON reservadepuestos.* TO 'desk'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-## Variables de entorno
-
-Crea un archivo `.env` en `server/` (o usa tu sistema de variables) con, por ejemplo:
-
-```dotenv
-# server/.env
-PORT=3001
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=reservadepuestos
-DB_USER=desk
-DB_PASS=desk123
-NODE_ENV=development
-```
-
-Ejemplo de configuración TypeORM (pseudo‑código):
-
-```ts
-// server/src/config/data-source.ts
-import { DataSource } from 'typeorm';
-export const AppDataSource = new DataSource({
-  type: 'mysql',
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT ?? 3306),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  entities: [__dirname + '/../**/*.entity.{ts,js}'],
-  synchronize: process.env.NODE_ENV !== 'production',
-  logging: false,
-});
-```
-
-## Scripts útiles
-
-En `server/package.json` (los nombres pueden variar):
-
-* `dev`: inicia el servidor con `nodemon`/`ts-node`.
-* `build`: compila TypeScript a JavaScript.
-* `start`: ejecuta el build compilado.
-
-En `client/package.json`:
-
-* `dev`: arranca el servidor de desarrollo.
-* `build`: genera el build de producción.
-* `preview`: sirve el build generado.
-
-## Endpoint y Playground
-
-* **GraphQL**: `http://localhost:3001/GRAPHQL`
-* Suele incluir **GraphQL Playground**/**Apollo Sandbox** para probar queries y mutations.
-
-## Ejemplos de consultas GraphQL
-
-> Adapta los nombres a tu *schema* real (p. ej. `Puesto`, `Reserva`, `Usuario`).
-
-**Query: listar puestos disponibles por fecha**
-
-```graphql
-query PuestosDisponibles($fecha: String!) {
-  puestosDisponibles(fecha: $fecha) {
-    id
-    nombre
-    zona
-  }
-}
-```
-
-**Mutation: crear una reserva**
-
-```graphql
-mutation CrearReserva($input: NuevaReservaInput!) {
-  crearReserva(input: $input) {
-    id
-    puesto { id nombre }
-    usuario { id nombre }
-    fecha
-    estado
-  }
-}
-```
-
-Variables de ejemplo:
-
-```json
-{
-  "input": {
-    "puestoId": 12,
-    "usuarioId": 5,
-    "fecha": "2025-11-03"
-  }
-}
-```
-
-**Mutation: cancelar una reserva**
-
-```graphql
-mutation CancelarReserva($id: ID!) {
-  cancelarReserva(id: $id) {
-    id
-    estado
-  }
-}
-```
+---
 
 ## Estructura del repositorio
-
 ```
-GRAPHQLDESK/
-├─ client/                  # Cliente web (desarrollo y pruebas)
-├─ server/                  # API GraphQL (Express + TypeORM)
-├─ desk_presentacion.pptx   # Presentación del proyecto
-├─ readme.md                # Este archivo
-└─ ...
+GRAPHQLDESK-main/
+├─ client/                 # Frontend Next.js + WebSocket cliente
+│  ├─ components/          # Componentes React
+│  ├─ pages/               # Paginas Next.js y definiciones GraphQL cliente
+│  ├─ python/              # Servicio WebSocket (deteccion de puestos)
+│  ├─ assets/              # Planos utilizados por el detector
+│  └─ .env.local           # Variables de entorno del frontend (no versionado)
+├─ server/                 # Backend Express + GraphQL + TypeORM
+│  ├─ src/                 # Codigo fuente TypeScript
+│  └─ .env                 # Variables del backend (no versionado)
+├─ desk_presentacion.pptx  # Presentacion del proyecto
+└─ readme.md               # Este documento
 ```
 
-## Referencia y recursos
+---
 
-* **TypeORM docs**: [https://typeorm.io/](https://typeorm.io/)
-* Serie de **PedroTech (GraphQL)**:
+## Configuracion y variables de entorno
 
-  * Parte 1 (Queries & Insert)
-  * Parte 2 (Delete & Update)
-  * Parte 3 (Conexión front/back)
-  * Parte 4 (Consultas con argumentos y más)
+### Backend (`server/.env`)
+Crear un archivo `.env` tomando como referencia:
+```
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=reservadepuestos
+DB_USER=root
+DB_PASS=
+```
 
-## Contribuir
+### Frontend (`client/.env.local`)
+```
+NEXT_PUBLIC_WS_HOST=localhost
+NEXT_PUBLIC_WS_PORT=5050
+NEXT_PUBLIC_GRAPHQL_URL=http://127.0.0.1:3001/graphql
+```
+`NEXT_PUBLIC_WS_*` permite cambiar el host/puerto del WebSocket sin tocar el codigo. Si no ejecutas el servicio Python puedes dejar los valores por defecto.
 
-Las PRs y sugerencias son bienvenidas. Para cambios grandes, abre primero un *issue* describiendo qué te gustaría modificar.
+### Servicio Python (`client/python`)
+Puedes exportar las mismas variables antes de lanzar el script, por ejemplo en PowerShell:
+$env:WS_HOST="0.0.0.0"
+$env:WS_PORT="5050"
+python client/python/place_finder.py
+```
 
-1. Haz *fork* del repo
-2. Crea tu rama: `git checkout -b feature/mi-mejora`
-3. *Commit*: `git commit -m "feat: mi mejora"`
-4. *Push*: `git push origin feature/mi-mejora`
-5. Abre un *pull request*
+---
+
+## Puesta en marcha
+
+### 1. Backend GraphQL (`server`)
+```powershell
+cd server
+npm install          # o yarn install
+npm run dev          # o yarn dev
+```
+El servidor quedara escuchando en `http://127.0.0.1:3001/graphql`. Asegurate de que MySQL este levantado y de que la base `reservadepuestos` exista.
+
+### 2. Servicio de vision artificial (`client/python`)
+Este paso es opcional pero recomendable si quieres generar automaticamente las posiciones de los puestos a partir de los planos.
+```powershell
+cd client/python
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install opencv-python websockets
+python place_finder.py
+```
+El script mostrara algo como `[RUNNING ON]0.0.0.0:5050 (local IP 192.168.1.23)`. Esa es la direccion que usara el frontend para abrir el WebSocket.
+
+### 3. Frontend Next.js (`client`)
+```powershell
+cd client
+npm install          # o yarn install
+npm run dev          # o yarn dev
+```
+Por defecto el frontend se sirve en `http://localhost:3000`. Al seleccionar un edificio/planta el cliente intentara abrir el WebSocket; si falla, realizara la carga solo con los datos de GraphQL, por lo que seguira mostrando los puestos utilizando la informacion almacenada en MySQL.
+
+---
+
+## Base de datos de ejemplo
+1. Arranca MySQL (por ejemplo desde XAMPP).
+2. Crea la base si aun no existe:
+   ```sql
+   CREATE DATABASE reservadepuestos CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+3. Opcional: crea un usuario dedicado.
+   ```sql
+   CREATE USER 'desk'@'%' IDENTIFIED BY 'desk123';
+   GRANT ALL PRIVILEGES ON reservadepuestos.* TO 'desk'@'%';
+   FLUSH PRIVILEGES;
+   ```
+4. TypeORM con `synchronize: true` creara las tablas en el primer arranque. Rellena la tabla `puesto` con los escritorios y sus coordenadas si no vas a usar el servicio Python.
+
+---
+
+## Comandos utiles
+
+| Ubicacion | Comando                | Descripcion                                    |
+|-----------|------------------------|------------------------------------------------|
+| server    | `npm run dev`          | Arranca GraphQL con nodemon                    |
+| server    | `npm run build`        | Compila TypeScript                             |
+| server    | `npm start`            | Ejecuta el build compilado                     |
+| client    | `npm run dev`          | Levanta Next.js y HMR                          |
+| client    | `npm run build`        | Genera build estatico                          |
+| client    | `npm run lint`         | Ejecuta ESLint                                 |
+| client    | `npm run start`        | Sirve el build generado                        |
+| client/python | `python place_finder.py` | Inicia el WebSocket de deteccion         |
+
+---
+
+## Solucion de problemas
+- **No se ven los puestos**: confirma que la tabla `puesto` tenga registros para la ciudad/planta seleccionada. Si dependes del servicio Python, verifica que el WebSocket imprime conexiones en consola.
+- **`Cannot GET /` en `localhost:3001`**: el backend solo expone `/graphql`; usa esa ruta o prueba con un cliente GraphQL.
+- **Errores CORS**: revisa que el frontend apunte a `http://127.0.0.1:3001/graphql` (o la URL que uses) y que el servidor aplique `cors()`.
+- **Fallo del WebSocket**: la app seguira funcionando gracias al fallback GraphQL. Ajusta `NEXT_PUBLIC_WS_HOST` si el script Python corre en otra maquina.
+
+---
+
+## Recursos adicionales
+- [Presentacion del proyecto (PPTX)](./desk_presentacion.pptx)
+- TypeORM: https://typeorm.io
+- Documentacion Next.js: https://nextjs.org/docs
+- Apollo Client DevTools: https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm
+
+---
 
 ## Licencia
-
-Este proyecto se distribuye con fines educativos. Añade un archivo `LICENSE` si deseas usar una licencia específica (MIT, Apache‑2.0, etc.).
+Proyecto de uso educativo. Ajusta o agrega un archivo `LICENSE` si deseas aplicar una licencia especifica.

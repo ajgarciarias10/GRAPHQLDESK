@@ -1,15 +1,15 @@
-import { useState,useEffect } from "react";
- import {ApolloClient,InMemoryCache,ApolloProvider,useQuery,useMutation, useLazyQuery} from '@apollo/client'
+import { useState } from "react";
+import {ApolloClient,InMemoryCache,ApolloProvider, useLazyQuery} from '@apollo/client'
 import Desk from "../components/desk/desk";
 import Header_Nav from "../components/header_nav/header_nav"
 import Places_Form from "../components/places_menu/places_menu"
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-import{cogerPuestosPasandoCiudadYPlanta, cogerPuestosPasandoId} from "../pages/Graphql/Queries"
+import{cogerPuestos} from "../pages/Graphql/Queries"
 //region Creacion de puesto
   // import {CREATE_PUESTO} from '../pages/Graphql/Mutations'
 //endregion
 //region Select query *
-  import{cogerPuestos} from '../pages/Graphql/Queries'
+ 
 //endregion
 
 
@@ -75,53 +75,54 @@ const Home = () => {
     }
 
     place = place + "_" + (building_floor).replace(" ","_");
-    // Actuializar ip cuando cambio de orenador
-    const client_socket = new W3CWebSocket('ws://192.168.2.218:5050');
+    const wsHost = process.env.NEXT_PUBLIC_WS_HOST || (typeof window !== "undefined" ? window.location.hostname : "127.0.0.1");
+    const wsPort = process.env.NEXT_PUBLIC_WS_PORT || "5050";
+    const fallbackToGraphql = () => {
+      loadDesks(null,building_city,building_floor);
+    };
 
-    client_socket.onopen = () => {
+    let socket;
+    try{
+      socket = new W3CWebSocket(`ws://${wsHost}:${wsPort}`);
+    }catch(error){
+      console.error("WebSocket initialization error", error);
+      fallbackToGraphql();
+      return;
+    }
+
+    let received = false;
+
+    socket.onopen = () => {
       console.log("WebSocket Client Connected");
-      client_socket.send(JSON.stringify({place:place,svg_width:svg_width,svg_height:svg_height}));
+      try{
+        socket.send(JSON.stringify({place:place,svg_width:svg_width,svg_height:svg_height}));
+      }catch(sendError){
+        console.error("WebSocket send error", sendError);
+        fallbackToGraphql();
+      }
     }
 
-    client_socket.onmessage = (message) => {
+    socket.onmessage = (message) => {
+      received = true;
       loadDesks(message.data,building_city,building_floor)
-      
+      socket.close();
+    }
 
+    socket.onerror = (error) => {
+      console.error("WebSocket error", error);
+      fallbackToGraphql();
+    }
+
+    socket.onclose = () => {
+      if(!received){
+        fallbackToGraphql();
+      }
     }
   }
 
-  const[cogerPuestos,{data}] = useLazyQuery(cogerPuestosPasandoCiudadYPlanta,{
-      onCompleted: data => {
-        if(typeof data !== 'undefined' ){  
-          // console.log(data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosx)
-            if(data.cogelPuestosPasandoCiudadYPlanta.ocupado == true && data.cogelPuestosPasandoCiudadYPlanta.disponibleParcialmente == false){
-              th_all_desks.push(<Desk pos_x={data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosx} pos_y = {data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosy}  deskStatus={"tu reservado"} 
-              tableId={data.cogelPuestosPasandoCiudadYPlanta.id_puesto} building_city={placesData[0]} building_floor={placesData[1]} 
-              date={date} start_time={startTime} end_time={endTime} />)
-            }else if(data.cogelPuestosPasandoCiudadYPlanta.ocupado == true && data.cogelPuestosPasandoCiudadYPlanta.disponibleParcialmente == true){
-              
-              th_all_desks.push(<Desk pos_x={data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosx} pos_y = {data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosy}  deskStatus={"parcialmente"} 
-            tableId={data.cogelPuestosPasandoCiudadYPlanta.id_puesto} building_city={placesData[0]} building_floor={placesData[1]} 
-              date={date} start_time={startTime} end_time={endTime} />)  
-            }
-            else if(data.cogelPuestosPasandoCiudadYPlanta.ocupado == false && data.cogelPuestosPasandoCiudadYPlanta.disponibleParcialmente == true){
-              th_all_desks.push(<Desk pos_x={data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosx} pos_y = {data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosy}  deskStatus={"parcialmente"} 
-            tableId={data.cogelPuestosPasandoCiudadYPlanta.id_puesto} building_city={placesData[0]} building_floor={placesData[1]} 
-              date={date} start_time={startTime} end_time={endTime} />)  
-            }
-            else{
-              
-              th_all_desks.push(<Desk pos_x={data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosx} pos_y = {data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosy}  deskStatus={"disponible"} 
-            tableId={data.cogelPuestosPasandoCiudadYPlanta.id_puesto} building_city={placesData[0]} building_floor={placesData[1]} 
-              date={date} start_time={startTime} end_time={endTime} />)
-            }
-          }else{
-            th_all_desks.push(<Desk pos_x={data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosx} pos_y = {data.cogelPuestosPasandoCiudadYPlanta.cantidadpuestosy}  deskStatus={"disponible"} 
-            tableId={data.cogelPuestosPasandoCiudadYPlanta.id_puesto} building_city={placesData[0]} building_floor={placesData[1]} 
-              date={date} start_time={startTime} end_time={endTime} />)
-          }            
-  }
-});
+  const [fetchAllDesks] = useLazyQuery(cogerPuestos, {
+    fetchPolicy: "network-only"
+  });
  
    
     //region  Descomentar para la creacion de la tabla Puesto
@@ -147,28 +148,86 @@ const Home = () => {
 
   
 
-  const loadDesks = async (positions,building_city,building_floor) =>{
-    positions = JSON.parse(positions)
-    window.th_all_desks = []
-
-    let i = 0;
-    for (const position of positions) {
-      
-      //region OJO!!! DESCOMENTAR ESTO SOLO UNA VEZ PARA QUE TENER CARGADA LA BASE DE DATOS TENEIS QUE CARGARLA SECCION POR SECCION
-        //NO OS PREOCUPEIS SI OS SALE EL ERROR DE DUPLICATED ENTRY ES POR QUE HABEIS DUPLICADO LA INSERCCION PERO LUEGO SE METE SOLO 1
-        // cargamelaBaseDeDatos(i,building_city,building_floor,position[0],position[1])
-      //endregion
-        await cogerPuestos(
-        {
-          variables:{
-            id_puesto:i+"_"+building_city+"_"+building_floor,
-            ciudad: building_city, 
-            n_planta:building_floor  
-          } 
-        })
-        i++
+  const resolveDeskStatus = (deskInfo) => {
+    if (!deskInfo) {
+      return "disponible";
     }
-    setAllDesks(th_all_desks);     
+    if (deskInfo.ocupado) {
+      return deskInfo.disponibleParcialmente ? "parcialmente" : "tu reservado";
+    }
+    return deskInfo.disponibleParcialmente ? "parcialmente" : "disponible";
+  }
+
+  const normalise = (value) => (value || "").replace(/\s+/g," ").trim();
+
+  const buildDeskComponent = (deskInfo, fallbackPos, building_city, building_floor) => {
+    const status = resolveDeskStatus(deskInfo);
+    const rawX = deskInfo?.cantidadpuestosx ?? fallbackPos?.[0];
+    const rawY = deskInfo?.cantidadpuestosy ?? fallbackPos?.[1];
+    const posX = typeof rawX === "number" ? rawX : Number(rawX);
+    const posY = typeof rawY === "number" ? rawY : Number(rawY);
+    if (!Number.isFinite(posX) || !Number.isFinite(posY)) {
+      return null;
+    }
+    const tableId = deskInfo?.id_puesto ?? `${posX}_${posY}_${building_city}_${building_floor}`;
+
+    return (
+      <Desk
+        key={tableId}
+        pos_x={posX}
+        pos_y={posY}
+        deskStatus={status}
+        tableId={tableId}
+        building_city={building_city}
+        building_floor={building_floor}
+        date={date}
+        start_time={startTime}
+        end_time={endTime}
+      />
+    );
+  };
+
+
+  const loadDesks = async (positions,building_city,building_floor) =>{
+    setAllDesks([]);
+    let parsedPositions = null;
+    if (positions) {
+      try{
+        parsedPositions = typeof positions === "string" ? JSON.parse(positions) : positions;
+      }catch(parseError){
+        console.error("Error parsing desk positions", parseError);
+      }
+    }
+
+    try{
+      const { data } = await fetchAllDesks();
+      const desks = (data?.cogerpuestos ?? []).filter(
+        (desk) => normalise(desk.ciudad) === normalise(building_city) && normalise(desk.n_planta) === normalise(building_floor)
+      );
+
+      if (desks.length === 0 && parsedPositions) {
+        const fallbackDesks = parsedPositions
+          .map((pos) => buildDeskComponent(null, pos, building_city, building_floor))
+          .filter(Boolean);
+        setAllDesks(fallbackDesks);
+        return;
+      }
+
+      const nextDesks = desks
+        .map((desk, index) => buildDeskComponent(desk, parsedPositions?.[index], building_city, building_floor))
+        .filter(Boolean);
+      setAllDesks(nextDesks);
+    }catch(error){
+      console.error("Error loading desks", error);
+      if(parsedPositions){
+        const fallbackDesks = parsedPositions
+          .map((pos) => buildDeskComponent(null, pos, building_city, building_floor))
+          .filter(Boolean);
+        setAllDesks(fallbackDesks);
+      }else{
+        setAllDesks([]);
+      }
+    }     
   }
 
 

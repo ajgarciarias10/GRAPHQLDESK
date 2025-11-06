@@ -1,4 +1,4 @@
-import { GiDesk } from "react-icons/gi";
+﻿import { GiDesk } from "react-icons/gi";
 import styles from './desk.module.css'
 
 import ReactHover, { Trigger, Hover } from "react-hover";
@@ -41,7 +41,7 @@ const  Desk = (props) => {
     const city_acron = {
         "Barcelona22@":"BAR",
         "GranadaCEPTS": "GRX",
-        "MadridOrduña":"MAD",
+        "MadridOrduÃ±a":"MAD",
         "ValenciaSorolla":"VAL",
     }
     
@@ -58,12 +58,12 @@ const  Desk = (props) => {
     }
 
     const getPlacesStatus = (childDeskStatus,formDate,formStartTime,formEndTime) => {
-        deskStatus = childDeskStatus;
-        date = formDate;
-        start_time = formStartTime;
-        end_time = formEndTime;
+        setDeskStatus(childDeskStatus);
+        setDate(formDate);
+        setStartTime(formStartTime);
+        setEndTime(formEndTime);
+        setStatusColor(statusColor[childDeskStatus]);
         console.log(childDeskStatus);
-        renderDeskType()
     }
 
     const renderDeskType = () => {
@@ -76,14 +76,14 @@ const  Desk = (props) => {
 
             return <Reservado deskStatus={deskStatus} statusColor={statusColor[deskStatus]} 
             tableId = {props.tableId} building_city={building_city_acron} building_floor={props.building_floor}
-            usuario={"Eugenio Martín García"} solicitante={"Eugenio Martín García"} fecha={date} 
+            usuario={"Eugenio MartÃ­n GarcÃ­a"} solicitante={"Eugenio MartÃ­n GarcÃ­a"} fecha={date} 
             hora_inicio={start_time} hora_fin={end_time}/>;
 
         }else if(deskStatus == "tu reservado"){
 
             return <TuReservado deskStatus={deskStatus} statusColor={statusColor[deskStatus]} 
             tableId = {props.tableId} building_city={building_city_acron} building_floor={props.building_floor}
-            usuario={"Eugenio Martín García"} solicitante={"Eugenio Martín García"} fecha={date} 
+            usuario={"Eugenio MartÃ­n GarcÃ­a"} solicitante={"Eugenio MartÃ­n GarcÃ­a"} fecha={date} 
             hora_inicio={start_time} hora_fin={end_time}/>;
 
         }
@@ -107,7 +107,7 @@ const  Desk = (props) => {
         <div style={{display:'flex',flexWrap:'wrap'}}>
             {showingForm === true && (
                 <ResvForm tableId = {props.tableId} building_city={building_city_acron} building_floor={props.building_floor} 
-                    getDate={getDate} showingForm={getShowingForm} getPlacesStatus={getPlacesStatus} user={"Eugenio Martín García"}/>
+                    getDate={getDate} showingForm={getShowingForm} getPlacesStatus={getPlacesStatus} user={"Eugenio MartÃ­n GarcÃ­a"}/>
             )}
             
             <div className={styles.main_container}style={{position:'absolute',top:(props.pos_y)+"px",left:(props.pos_x)+"px"}}>
@@ -131,3 +131,8 @@ const  Desk = (props) => {
 }
 
 export default Desk;
+
+
+
+
+

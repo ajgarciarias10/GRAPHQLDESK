@@ -4,6 +4,7 @@ import socket
 import websockets
 import math
 import json
+import os
 
 sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 sock.connect(('8.8.8.8',80))
@@ -73,8 +74,10 @@ async def test(websocket):
 
 
 async def main():
-    print(f"[RUNNING ON]{WiFi_ip}:5050")
-    async with websockets.serve(getDeskPositionsFromImage, WiFi_ip, 5050):
+    host = os.getenv("WS_HOST", "0.0.0.0")
+    port = int(os.getenv("WS_PORT", "5050"))
+    print(f"[RUNNING ON]{host}:{port} (local IP {WiFi_ip})")
+    async with websockets.serve(getDeskPositionsFromImage, host, port):
         await asyncio.Future()  # run forever
 
 asyncio.run(main())

@@ -1,0 +1,15 @@
+npm install --global yarn
+npm install -g typescript
+//CREAMOS DOS CARPETAS /SERVER Y CLIENTE 
+
+CD SEERVER 
+yarn init
+tsc --init
+yarn add typescript ts-node express cors nodemon
+yarn add @types/cors @types/express @types/node
+------------------------------------------------------------------
+cd server
+RECUERDA EN 
+y yarn dev para iniciar el proyecto
+y te metes aquÍ en el index.ts de src cambiar el tema del sql 
+  http://localhost:3001/GRAPHQL
